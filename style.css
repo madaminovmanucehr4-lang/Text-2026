@@ -1,0 +1,39 @@
+body {
+  background: #111;
+  color: white;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.card {
+  background: #1c1c1c;
+  padding: 20px;
+  max-width: 600px;
+  border-radius: 12px;
+}
+
+button {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #444;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #666;
+}
+
+button.correct {
+  background-color: green;
+  color: white;
+}
+
+button.wrong {
+  background-color: red;
+  color: white;
+}
