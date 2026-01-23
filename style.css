@@ -1,0 +1,17 @@
+body { margin:0; font-family: Arial,sans-serif; background: linear-gradient(to bottom,#1e1e2f,#3b3b6f); color:#fff; padding-top:60px; }
+.screen { display:none; padding:20px; text-align:center; }
+.screen.active { display:block; }
+input { padding:10px; font-size:16px; margin-top:10px; }
+button { padding:15px 25px; margin:10px; font-size:18px; border:none; border-radius:10px; cursor:pointer; transition:0.3s; }
+button:hover { opacity:0.8; }
+.subject-buttons button, .cluster-buttons button, .level-buttons button { background-color:#4a90e2; }
+.answer-buttons button { display:block; width:80%; margin:10px auto; background-color:#555; color:#fff; }
+.answer-buttons button.correct { background-color:green; }
+.answer-buttons button.wrong { background-color:red; }
+#profile-stats { margin-top:20px; text-align:left; background-color: rgba(255,255,255,0.1); padding:15px; border-radius:10px; }
+#top-bar { position:fixed; top:0; left:0; right:0; background: rgba(0,0,0,0.7); padding:10px 20px; display:flex; justify-content:space-between; align-items:center; z-index:1000; color:#fff; font-size:16px; }
+#top-bar button { padding:8px 15px; font-size:16px; border-radius:8px; background-color:#4a90e2; color:#fff; border:none; cursor:pointer; }
+#top-bar button:hover { opacity:0.8; }
+.back-btn { background-color:#888; color:#fff; padding:10px 20px; border-radius:8px; }
+.back-btn:hover { opacity:0.8; }
+.disclaimer { font-size:12px; color:#ccc; margin-top:20px; };

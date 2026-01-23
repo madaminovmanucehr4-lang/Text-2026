@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brain Test Zone</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="top-bar">
+  <span id="score-bar">✅: <span id="correct-count">0</span> | ❌: <span id="wrong-count">0</span> | Вопрос: <span id="question-index">0</span>/<span id="total-questions">0</span></span>
+  <button id="profile-btn">Профиль</button>
+</div>
+
+<div id="username-screen" class="screen active">
+  <h2>Салом! Ворид кунед номи худ:</h2>
+  <input type="text" id="username-input" placeholder="Номи шумо">
+  <button id="start-btn">Оғоз</button>
+</div>
+
+<div id="cluster-screen" class="screen">
+  <h2>Интихоб кунед кластер:</h2>
+  <div class="cluster-buttons">
+    <button class="cluster-btn" data-cluster="1">Кластер 1 📐🧪</button>
+    <button class="cluster-btn" data-cluster="2">Кластер 2 📘🌍</button>
+    <button class="cluster-btn" data-cluster="3">Кластер 3 📜📝</button>
+    <button class="cluster-btn" data-cluster="4">Кластер 4 ⚖️📚</button>
+    <button class="cluster-btn" data-cluster="5">Кластер 5 🧬🔬</button>
+  </div>
+</div>
+
+<div id="subject-screen" class="screen">
+  <h2>Кластер <span id="cluster-number"></span> - Интихоб кунед предмет:</h2>
+  <div class="subject-buttons" id="subject-buttons"></div>
+  <button class="back-btn" data-back="cluster-screen">Назад</button>
+</div>
+
+<div id="level-screen" class="screen">
+  <h2>Интихоб кунед дараҷа:</h2>
+  <div class="level-buttons">
+    <button class="level-btn" data-level="easy">🟢 Осон</button>
+    <button class="level-btn" data-level="medium">🟡 Миёна</button>
+    <button class="level-btn" data-level="hard">🔴 Сухт</button>
+  </div>
+  <button class="back-btn" data-back="subject-screen">Назад</button>
+</div>
+
+<div id="question-screen" class="screen">
+  <h2 id="question-number"></h2>
+  <p id="question-text"></p>
+  <div id="answer-buttons" class="answer-buttons"></div>
+  <button id="finish-subject-btn">Закончить предмет</button>
+</div>
+
+<div id="profile-screen" class="screen">
+  <h2>Профили шумо, <span id="profile-username"></span></h2>
+  <div id="profile-stats"></div>
+  <button id="back-to-menu-btn">Меню</button>
+  <button id="reset-progress-btn">Сбросить прогресс</button>
+  <p class="disclaimer">
+    Brain Test Zone разработчик этого сайта.<br>
+    Вопросы были подобраны на основе формата ММТ и предназначены только для тренировки и проверки знаний.<br>
+    Сайт не гарантирует 100% правильность ответов и не является официальным источником.<br>
+    Используйте для развития мышления и подготовки к экзаменам.
+  </p>
+</div>
+
+<script src="questions.js"></script>
+<script src="ui.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
