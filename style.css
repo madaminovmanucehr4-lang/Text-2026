@@ -1,0 +1,349 @@
+:root { 
+    --bg: #050510; --accent: #00f2ff; --bomb-color: #ff0055; 
+    --neon-pink: #ff2dae; --cell-bg: rgba(255, 255, 255, 0.08); 
+}
+
+body { 
+    margin: 0; padding: 0; background-color: var(--bg); 
+    font-family: 'Arial Black', sans-serif; 
+    display: flex; flex-direction: column; height: 100vh; 
+    color: white; overflow: hidden; touch-action: none;
+}
+
+#start-menu { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; }
+.menu-logo { font-size: 48px; text-align: center; margin-bottom: 50px; line-height: 1; text-shadow: 0 0 20px var(--accent); }
+.play-btn { width: 100px; height: 100px; border: 5px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.play-tr { width: 0; height: 0; border-top: 20px solid transparent; border-bottom: 20px solid transparent; border-left: 35px solid white; margin-left: 10px; }
+
+.header { padding: 15px 20px 0 20px; width: 100%; display: flex; flex-direction: column; box-sizing: border-box; }
+.record-box { font-size: 20px; color: #fbff00; text-shadow: 0 0 10px rgba(251, 255, 0, 0.5); font-weight: 900; }
+
+.progress-container { width: 100%; height: 12px; background: #1a1a2e; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
+#level-progress { width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent), #fbff00); transition: width 0.3s; }
+
+.shop-area { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+.lvl-txt { font-size: 14px; color: var(--accent); }
+.shop-btn { padding: 8px 15px; background: linear-gradient(135deg, var(--bomb-color), #80002b); border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); color: white; font-weight: bold; font-size: 12px; cursor: pointer; }
+
+.heart-area { height: 120px; display: flex; justify-content: center; align-items: center; }
+.neon-heart-wrapper { position: relative; width: 100px; height: 100px; }
+.neon-heart-main { 
+    position: absolute; width: 100%; height: 100%; 
+    background: radial-gradient(circle at 30% 30%, #ff80df, var(--neon-pink)); 
+    clip-path: path('M50 85 C50 85 5 65 5 35 A15 15 0 0 1 50 22 A15 15 0 0 1 95 35 C95 65 50 85 50 85 Z'); 
+    filter: drop-shadow(0 0 15px var(--neon-pink)); 
+}
+#score-heart { position: absolute; width: 100%; text-align: center; top: 32px; font-size: 28px; font-weight: 900; z-index: 5; }
+
+#game-area { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#grid-container { 
+    display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; 
+    background: #101223; padding: 12px; border-radius: 16px; 
+    width: 88vw; height: 88vw; max-width: 380px; max-height: 380px; 
+}
+
+.cell { background: var(--cell-bg); border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
+.cell.filled { box-shadow: inset -3px -3px 6px rgba(0,0,0,0.4); border: none; }
+.cell.preview { background: rgba(255, 255, 255, 0.2) !important; }
+.cell.bomb-glow { background: rgba(255, 0, 85, 0.3) !important; box-shadow: 0 0 15px var(--bomb-color) !important; }
+
+.c1 { background: linear-gradient(135deg, #00d2ff, #0072ff); }
+.c2 { background: linear-gradient(135deg, #ffcc00, #ff9500); }
+.c3 { background: linear-gradient(135deg, #ff2e2e, #a30000); }
+.c4 { background: linear-gradient(135deg, #b026ff, #6a00ff); }
+.c5 { background: linear-gradient(135deg, #39ff14, #008f11); }
+.bomb-unit { background: radial-gradient(circle at 30% 30%, #ff4d88, #b3003b) !important; border-radius: 50% !important; border: 2px solid #fff !important; }
+
+#shapes-dock { height: 140px; width: 100%; display: flex; justify-content: space-around; align-items: center; }
+.shape-preview { width: 30%; height: 100%; display: flex; justify-content: center; align-items: center; }
+.shape-inner { display: grid; gap: 4px; }
+.shape-inner .cell { width: 35px !important; height: 35px !important; }
+
+#drag-ghost { position: fixed; pointer-events: none; display: grid; gap: 5px; z-index: 1000; }
+.screen { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
+.hidden { display: none !important; }
+#shapes-dock { 
+    height: 140px;      
+    display: flex; 
+    justify-content: space-around; 
+    align-items: center; 
+    width: 100%; 
+
+    margin-bottom: 150px;   
+    position: relative; 
+    z-index: 10;
+}
+@keyframes line-clear-flash {
+    0% { background: #fff; transform: scale(1.1); box-shadow: 0 0 20px #fff; opacity: 1; }
+    100% { background: transparent; transform: scale(0.5); box-shadow: 0 0 0px #fff; opacity: 0; }
+}
+
+.cell-exploding {
+    animation: line-clear-flash 0.5s ease-out forwards;
+    z-index: 100;
+}
+.lvl-txt {
+    font-size: 24px;          /* Увеличил размер (было примерно 14-16) */
+    font-weight: 900;         /* Сделал шрифт очень жирным */
+    color: #ffffff;           /* Цвет текста белый */
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.5); /* Добавил легкое свечение */
+    margin-right: 10px;       /* Отступ справа, чтобы не прилипало к кнопке */
+}
+
+/* Если нужно увеличить само число уровня */
+#lvl-num {
+    color: #fbff00;           /* Сделаем само число желтым, чтобы бросалось в глаза */
+    font-size: 28px;          /* Число чуть больше текста */
+}
+
+/* Эффект появления экрана уровня */
+#level-up-screen {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s ease;
+}
+
+/* Красивый текст НОВЫЙ УРОВЕНЬ */
+#level-up-screen h1 {
+    font-size: 50px;
+    color: #fff;
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0;
+    /* Сияние текста */
+    text-shadow: 0 0 10px #00f2ff, 0 0 20px #00f2ff, 0 0 40px #00f2ff;
+    animation: levelBounce 1.2s ease-out forwards;
+}
+
+/* Дополнительный текст под уровнем */
+.level-sub-text {
+    font-size: 20px;
+    color: #fbff00;
+    margin-top: 20px;
+    letter-spacing: 5px;
+    animation: fadeIn 1.5s ease;
+}
+
+/* Анимация прыжка и увеличения */
+@keyframes levelBounce {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Белая вспышка на весь экран */
+.flash-effect {
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 10001;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.flash-active {
+    animation: screenFlash 0.6s ease-out;
+}
+
+@keyframes screenFlash {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+#score-heart { 
+    position: absolute; 
+    width: 80%;           /* Ограничиваем ширину внутри сердца */
+    height: 80%;          /* Ограничиваем высоту */
+    left: 10%;            /* Центрируем */
+    top: 10%;             /* Центрируем */
+    display: flex; 
+    align-items: center;  /* Центр по вертикали */
+    justify-content: center; /* Центр по горизонтали */
+    text-align: center; 
+    font-size: 16px;      /* Базовый размер */
+    font-weight: 900; 
+    z-index: 10; 
+    line-height: 0.9;     /* Чтобы строки были ближе друг к другу */
+    word-break: break-all; /* Разрывать длинные числа, если не влезают */
+    color: white;
+    pointer-events: none;
+}
+
+/* Эффект тук-тук */
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.heart-bump {
+    animation: heartBeat 0.3s ease-out !important;
+}
+/* 1. ОБЛАСТЬ СЕРДЦА */
+.heart-area { 
+    height: 120px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+/* 2. КОНТЕЙНЕР (Здесь работает ВСЕГДА активный "дук-дук") */
+.neon-heart-wrapper { 
+    position: relative; 
+    width: 100px; 
+    height: 100px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Это бесконечная анимация живого биения */
+    animation: heartAlwaysBeating 1.5s infinite ease-in-out;
+}
+
+/* 3. ВНЕШНИЙ ВИД (Твое оригинальное сердце с глянцем) */
+.neon-heart-main { 
+    position: absolute; 
+    width: 100%; 
+    height: 100%; 
+    /* Глубокий градиент для объема */
+    background: radial-gradient(circle at 35% 35%, #ff99e6 0%, #ff2dae 45%, #800055 100%); 
+    /* Твой оригинальный clip-path */
+    clip-path: path('M50 85 C50 85 5 65 5 35 A15 15 0 0 1 50 22 A15 15 0 0 1 95 35 C95 65 50 85 50 85 Z'); 
+    /* Яркое неоновое свечение */
+    filter: drop-shadow(0 0 15px var(--neon-pink)); 
+    z-index: 1;
+}
+
+/* 4. БЛИК (Эффект стекла сверху) */
+.neon-heart-wrapper::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* Белое пятно для глянца */
+    background: radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 55%);
+    clip-path: path('M50 85 C50 85 5 65 5 35 A15 15 0 0 1 50 22 A15 15 0 0 1 95 35 C95 65 50 85 50 85 Z');
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* 5. ЦИФРЫ ВНУТРИ */
+#score-heart { 
+    position: absolute; 
+    width: 100%; 
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: -5px; /* Поднимаем в центр широкой части */
+    left: 0;
+    font-size: 26px; 
+    font-weight: 900; 
+    z-index: 10; 
+    color: white;
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+/* --- АНИМАЦИИ --- */
+
+/* АНИМАЦИЯ 1: Постоянное биение сердца (всегда работает) */
+@keyframes heartAlwaysBeating {
+    0% { transform: scale(1); }
+    15% { transform: scale(1.15); } /* Первый удар */
+    30% { transform: scale(1); }
+    45% { transform: scale(1.1); }  /* Второй удар потише */
+    100% { transform: scale(1); }
+}
+
+/* АНИМАЦИЯ 2: Мощный удар когда ставишь блок (другой стиль) */
+.heart-bump {
+    /* Эта анимация перекроет основную на 0.4 сек */
+    animation: heartPowerHit 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+@keyframes heartPowerHit {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.5); } /* Очень сильное расширение */
+    100% { transform: scale(1); }
+}
+/* 1. ВНЕШНИЙ КОНТЕЙНЕР — теперь он отвечает за УДАР ПРИ ХОДЕ */
+.neon-heart-wrapper { 
+    position: relative; 
+    width: 100px; 
+    height: 100px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+/* Эффект мощного удара при постановке блока (теперь на контейнере) */
+.heart-bump {
+    animation: heartPowerHit 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+@keyframes heartPowerHit {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.4); } /* Сильный прыжок */
+    100% { transform: scale(1); }
+}
+
+/* 2. САМО СЕРДЦЕ — оно теперь ВСЕГДА делает "ДУК-ДУК" */
+.neon-heart-main { 
+    position: absolute; 
+    width: 100%; 
+    height: 100%; 
+    background: radial-gradient(circle at 35% 35%, #ff99e6 0%, var(--neon-pink) 45%, #800055 100%); 
+    clip-path: path('M50 85 C50 85 5 65 5 35 A15 15 0 0 1 50 22 A15 15 0 0 1 95 35 C95 65 50 85 50 85 Z'); 
+    filter: drop-shadow(0 0 15px var(--neon-pink)); 
+    z-index: 1;
+
+    /* ПОСТОЯННОЕ БИЕНИЕ (никогда не останавливается) */
+    animation: heartAlwaysBeating 1.8s infinite ease-in-out;
+}
+
+/* Блеск поверх сердца */
+.neon-heart-main::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 55%);
+    pointer-events: none;
+}
+
+/* 3. АНИМАЦИЯ ПОСТОЯННОГО БИЕНИЯ */
+@keyframes heartAlwaysBeating {
+    0% { transform: scale(1); }
+    10% { transform: scale(1.12); } /* Удар 1 */
+    20% { transform: scale(1); }
+    30% { transform: scale(1.08); } /* Удар 2 */
+    100% { transform: scale(1); }
+}
+
+/* 4. ТЕКСТ (теперь внутри, чтобы тоже пульсировал вместе с сердцем) */
+#score-heart { 
+    position: absolute; 
+    width: 100%; 
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: -5px;
+    left: 0;
+    font-size: 26px; 
+    font-weight: 900; 
+    z-index: 10; 
+    color: white;
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    /* Текст пульсирует вместе с сердцем */
+    animation: heartAlwaysBeating 1.8s infinite ease-in-out;
+}
